@@ -1,3 +1,4 @@
+use crate::resources::ConferenceProperties;
 use crate::sendable::Sendable;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -6,8 +7,13 @@ use std::collections::BTreeMap;
  * from: https://developers.google.com/calendar/api/v3/reference/calendarList#resource
  */
 
+fn default_kind() -> String {
+    "calendar#calendarListEntry".to_string()
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CalendarListItem {
+    #[serde(default = "default_kind")]
     pub kind: String,
     pub id: String,
     pub etag: String,
@@ -68,38 +74,6 @@ pub enum NotificationSettingType {
     EventResponse,
     #[serde(rename = "agenda")]
     Agenda,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ConferenceProperties {
-    #[serde(rename = "allowedConferenceSolutionTypes")]
-    pub allowed_solution_types: Vec<AllowedSolutionType>,
-    #[serde(rename = "defaultReminders")]
-    pub default_reminders: Vec<DefaultReminder>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DefaultReminder {
-    pub method: ReminderMethod,
-    pub minutes: u16,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum ReminderMethod {
-    #[serde(rename = "email")]
-    EMail,
-    #[serde(rename = "popup")]
-    PopUp,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum AllowedSolutionType {
-    #[serde(rename = "eventHangout")]
-    EventHangout,
-    #[serde(rename = "eventNamedHangout")]
-    EventNamedHangout,
-    #[serde(rename = "hangoutsMeet")]
-    HangoutsMeet,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
