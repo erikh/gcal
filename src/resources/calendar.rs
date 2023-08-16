@@ -2,6 +2,10 @@ use crate::{resources::ConferenceProperties, sendable::Sendable};
 use serde_derive::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+/*
+ * from: https://developers.google.com/calendar/api/v3/reference/calendars#resource
+ */
+
 fn default_kind() -> String {
     "calendar#calendar".to_string()
 }
