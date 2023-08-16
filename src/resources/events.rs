@@ -16,6 +16,89 @@ pub struct Event {
     pub kind: String,
     pub id: String,
     pub calendar_id: String,
+    pub attachments: Vec<EventAttachment>,
+    #[serde(rename = "attendeesOmitted")]
+    pub attendees_omitted: Option<bool>,
+    pub attendees: Vec<EventAttendees>,
+    #[serde(rename = "colorId")]
+    pub color_id: Option<String>,
+    #[serde(rename = "conferenceData")]
+    pub conference_data: EventConferenceData,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventConferenceData {
+    #[serde(rename = "conferenceId")]
+    pub conference_id: Option<String>,
+    #[serde(rename = "conferenceSolution")]
+    pub conference_solution: Option<EventConferenceSolution>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventConferenceSolution {
+    #[serde(rename = "iconUri")]
+    pub icon_uri: String,
+    pub key: EventConferenceSolutionKey,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventConferenceSolutionKey {
+    #[serde(rename = "type")]
+    pub typ: EventConferenceSolutionKeyType,
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventConferenceSolutionKeyType {
+    #[serde(rename = "eventHangout")]
+    EventHangout,
+    #[serde(rename = "eventNamedHangout")]
+    EventNamedHangout,
+    #[serde(rename = "hangoutsMeet")]
+    HangoutsMeet,
+    #[serde(rename = "addOn")]
+    AddOn,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventAttendees {
+    #[serde(rename = "additionalGuests")]
+    pub additional_guests: Option<u8>,
+    pub comment: Option<String>,
+    #[serde(rename = "displayName")]
+    pub display_name: Option<String>,
+    pub email: String,
+    pub id: String,
+    pub optional: Option<bool>,
+    pub organizer: Option<bool>,
+    pub resource: Option<bool>,
+    #[serde(rename = "responseStatus")]
+    pub response_status: EventResponseStatus,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventResponseStatus {
+    #[serde(rename = "needsAction")]
+    NeedsAction,
+    #[serde(rename = "declined")]
+    Declined,
+    #[serde(rename = "tentative")]
+    Tentative,
+    #[serde(rename = "accepted")]
+    Accepted,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventAttachment {
+    #[serde(rename = "fileId")]
+    pub file_id: String,
+    #[serde(rename = "fileUrl")]
+    pub file_url: String,
+    #[serde(rename = "iconLink")]
+    pub icon_link: String,
+    #[serde(rename = "mimeType")]
+    pub mime_type: String,
+    pub title: String,
 }
 
 impl Sendable for Event {
