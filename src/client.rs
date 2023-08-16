@@ -21,7 +21,7 @@ impl Client {
         })
     }
 
-    fn set_headers(&mut self, header: HeaderMap<HeaderValue>) {
+    pub(crate) fn set_headers(&mut self, header: HeaderMap<HeaderValue>) {
         self.headers = Some(header)
     }
 
