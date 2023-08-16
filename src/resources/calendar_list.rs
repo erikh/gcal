@@ -2,11 +2,12 @@ use crate::sendable::Sendable;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+/*
+ * from: https://developers.google.com/calendar/api/v3/reference/calendarList#resource
+ */
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CalendarListItem {
-    /*
-     * from: https://developers.google.com/calendar/api/v3/reference/calendarList#resource
-     */
     pub kind: String,
     pub id: String,
     pub etag: String,
