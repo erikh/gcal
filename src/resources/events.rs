@@ -24,6 +24,35 @@ pub struct Event {
     pub color_id: Option<String>,
     #[serde(rename = "conferenceData")]
     pub conference_data: EventConferenceData,
+    pub created: String,
+    pub creator: EventCreator,
+    pub description: Option<String>,
+    pub end: EventCalendarDate,
+    #[serde(rename = "endTimeUnspecified")]
+    pub end_time_unspecified: bool,
+    pub etag: String,
+    pub event_type: EventType,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventType {
+    #[serde(rename = "default")]
+    Default,
+    #[serde(rename = "outOfOffice")]
+    OutOfOffice,
+    #[serde(rename = "focusTime")]
+    FocusTime,
+    #[serde(rename = "workingLocation")]
+    WorkingLocation,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventCalendarDate {
+    pub date: Option<String>,
+    #[serde(rename = "dateTime")]
+    pub date_time: Option<String>,
+    #[serde(rename = "timeZone")]
+    pub time_zone: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -38,6 +67,16 @@ pub struct EventConferenceData {
     pub entry_points: Vec<EventConferenceEntryPoint>,
     pub notes: Option<String>,
     pub signature: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventCreator {
+    #[serde(rename = "displayName")]
+    pub display_name: Option<String>,
+    pub email: Option<String>,
+    pub id: Option<String>,
+    #[serde(rename = "self")]
+    pub appears_as_self: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
