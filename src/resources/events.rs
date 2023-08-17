@@ -32,6 +32,62 @@ pub struct EventConferenceData {
     pub conference_id: Option<String>,
     #[serde(rename = "conferenceSolution")]
     pub conference_solution: Option<EventConferenceSolution>,
+    #[serde(rename = "createRequest")]
+    pub create_request: Option<EventCreateConferenceRequest>,
+    #[serde(rename = "entryPoints")]
+    pub entry_points: Vec<EventConferenceEntryPoint>,
+    pub notes: Option<String>,
+    pub signature: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventConferenceEntryPoint {
+    #[serde(rename = "entryPointType")]
+    entry_point_type: EventConferenceEntryPointType,
+    label: String,
+    #[serde(rename = "meetingCode")]
+    meeting_code: Option<String>,
+    passcode: Option<String>,
+    password: Option<String>,
+    pin: Option<String>,
+    uri: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventConferenceEntryPointType {
+    #[serde(rename = "video")]
+    Video,
+    #[serde(rename = "phone")]
+    Phone,
+    #[serde(rename = "sip")]
+    SIP,
+    #[serde(rename = "more")]
+    More,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventCreateConferenceRequest {
+    #[serde(rename = "conferenceSolutionKey")]
+    conference_solution_key: EventConferenceSolutionKey,
+    #[serde(rename = "requestId")]
+    request_id: String,
+    status: EventConferenceStatus,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventConferenceStatus {
+    #[serde(rename = "statusCode")]
+    status_code: EventConferenceStatusCode,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventConferenceStatusCode {
+    #[serde(rename = "pending")]
+    Pending,
+    #[serde(rename = "success")]
+    Success,
+    #[serde(rename = "failure")]
+    Failure,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -45,7 +101,7 @@ pub struct EventConferenceSolution {
 pub struct EventConferenceSolutionKey {
     #[serde(rename = "type")]
     pub typ: EventConferenceSolutionKeyType,
-    pub name: String,
+    pub name: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
