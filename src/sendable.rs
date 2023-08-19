@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use url::Url;
 
-const BASE_URL: &str = "https://www.googleapis.com/calendar/v3/users/me/";
+const BASE_URL: &str = "https://www.googleapis.com/calendar/v3";
 
 pub trait Sendable
 where

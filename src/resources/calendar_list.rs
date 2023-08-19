@@ -93,7 +93,7 @@ pub struct CalendarList;
 
 impl Sendable for CalendarListItem {
     fn path(&self) -> String {
-        format!("calendarList/{}", self.id)
+        format!("users/me/calendarList/{}", self.id)
     }
 
     fn query(&self) -> BTreeMap<String, String> {
@@ -103,7 +103,7 @@ impl Sendable for CalendarListItem {
 
 impl Sendable for CalendarList {
     fn path(&self) -> String {
-        String::from("calendarList")
+        String::from("users/me/calendarList")
     }
 
     fn query(&self) -> BTreeMap<String, String> {
