@@ -92,7 +92,7 @@ pub enum CalendarAccessRole {
 pub struct CalendarList;
 
 impl Sendable for CalendarListItem {
-    fn path(&self) -> String {
+    fn path(&self, _action: Option<String>) -> String {
         format!("users/me/calendarList/{}", self.id)
     }
 
@@ -102,7 +102,7 @@ impl Sendable for CalendarListItem {
 }
 
 impl Sendable for CalendarList {
-    fn path(&self) -> String {
+    fn path(&self, _action: Option<String>) -> String {
         String::from("users/me/calendarList")
     }
 

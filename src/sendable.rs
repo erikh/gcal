@@ -7,12 +7,12 @@ pub trait Sendable
 where
     Self: serde::Serialize,
 {
-    fn path(&self) -> String;
+    fn path(&self, action: Option<String>) -> String;
     fn query(&self) -> BTreeMap<String, String>;
 
-    fn url(&self) -> Result<Url, anyhow::Error> {
+    fn url(&self, action: Option<String>) -> Result<Url, anyhow::Error> {
         Ok(Url::parse_with_params(
-            &format!("{}{}", BASE_URL, self.path()),
+            &format!("{}{}", BASE_URL, self.path(action)),
             self.query(),
         )?)
     }

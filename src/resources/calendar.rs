@@ -26,7 +26,7 @@ pub struct Calendar {
 }
 
 impl Sendable for Calendar {
-    fn path(&self) -> String {
+    fn path(&self, _action: Option<String>) -> String {
         format!("calendars/{}", self.id)
     }
 

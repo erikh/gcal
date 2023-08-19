@@ -347,8 +347,13 @@ pub struct EventAttachment {
 }
 
 impl Sendable for Event {
-    fn path(&self) -> String {
-        format!("calendars/{}/events/{}", self.calendar_id, self.id)
+    fn path(&self, action: Option<String>) -> String {
+        format!(
+            "calendars/{}/events/{}/{}",
+            self.calendar_id,
+            self.id,
+            action.unwrap_or_default()
+        )
     }
 
     fn query(&self) -> BTreeMap<String, String> {

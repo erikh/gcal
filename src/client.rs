@@ -37,26 +37,58 @@ impl Client {
         Ok(self.set_bearer(req).send().await?)
     }
 
-    pub async fn get(&self, target: impl Sendable) -> Result<Response, anyhow::Error> {
-        self.send(self.client.get(target.url()?)).await
+    pub async fn get(
+        &self,
+        action: Option<String>,
+        target: impl Sendable,
+    ) -> Result<Response, anyhow::Error> {
+        self.send(self.client.get(target.url(action)?)).await
     }
 
-    pub async fn post(&self, target: impl Sendable) -> Result<Response, anyhow::Error> {
-        self.send(self.client.post(target.url()?).body(target.body_bytes()?))
-            .await
+    pub async fn post(
+        &self,
+        action: Option<String>,
+        target: impl Sendable,
+    ) -> Result<Response, anyhow::Error> {
+        self.send(
+            self.client
+                .post(target.url(action)?)
+                .body(target.body_bytes()?),
+        )
+        .await
     }
 
-    pub async fn put(&self, target: impl Sendable) -> Result<Response, anyhow::Error> {
-        self.send(self.client.put(target.url()?).body(target.body_bytes()?))
-            .await
+    pub async fn put(
+        &self,
+        action: Option<String>,
+        target: impl Sendable,
+    ) -> Result<Response, anyhow::Error> {
+        self.send(
+            self.client
+                .put(target.url(action)?)
+                .body(target.body_bytes()?),
+        )
+        .await
     }
 
-    pub async fn patch(&self, target: impl Sendable) -> Result<Response, anyhow::Error> {
-        self.send(self.client.patch(target.url()?).body(target.body_bytes()?))
-            .await
+    pub async fn patch(
+        &self,
+        action: Option<String>,
+        target: impl Sendable,
+    ) -> Result<Response, anyhow::Error> {
+        self.send(
+            self.client
+                .patch(target.url(action)?)
+                .body(target.body_bytes()?),
+        )
+        .await
     }
 
-    pub async fn delete(&self, target: impl Sendable) -> Result<Response, anyhow::Error> {
-        self.send(self.client.delete(target.url()?)).await
+    pub async fn delete(
+        &self,
+        action: Option<String>,
+        target: impl Sendable,
+    ) -> Result<Response, anyhow::Error> {
+        self.send(self.client.delete(target.url(action)?)).await
     }
 }
