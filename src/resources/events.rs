@@ -1,6 +1,6 @@
-use crate::sendable::Sendable;
+use crate::{resources::DefaultReminder, sendable::Sendable};
 use serde_derive::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 /*
  * from: https://developers.google.com/calendar/api/v3/reference/events#resource
@@ -8,6 +8,10 @@ use std::collections::BTreeMap;
 
 fn default_kind() -> String {
     "calendar#event".to_string()
+}
+
+fn default_true() -> Option<bool> {
+    Some(true)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -32,6 +36,152 @@ pub struct Event {
     pub end_time_unspecified: bool,
     pub etag: String,
     pub event_type: EventType,
+    #[serde(rename = "extendedProperties")]
+    pub extended_properties: EventExtendedProperties,
+    pub gadget: EventGadget,
+    #[serde(rename = "guestsCanInviteOthers", default = "default_true")]
+    pub guests_invite_others: Option<bool>,
+    #[serde(rename = "guestsCanModify")]
+    pub guests_can_modify: Option<bool>,
+    #[serde(rename = "guestsCanSeeOtherGuests", default = "default_true")]
+    pub guests_can_see_other_guests: Option<bool>,
+    #[serde(rename = "hangoutLink")]
+    pub hangout_link: String,
+    #[serde(rename = "htmlLink")]
+    pub html_link: String,
+    #[serde(rename = "iCalUID")]
+    pub ical_uid: String,
+    pub location: String,
+    pub locked: bool,
+    pub organizer: Option<EventOrganizer>,
+    pub original_start_time: EventCalendarDate,
+    #[serde(rename = "privateCopy")]
+    pub private_copy: bool,
+    pub recurrence: BTreeSet<String>,
+    pub reminders: Option<EventReminder>,
+    pub sequence: u64,
+    pub source: Option<EventSource>,
+    pub start: EventCalendarDate,
+    pub status: EventStatus,
+    pub summary: String,
+    pub transparency: Option<EventTransparency>,
+    pub updated: String,
+    pub visibility: Option<EventVisibility>,
+    pub working_location: Option<EventWorkingLocation>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventOfficeLocationType {
+    #[serde(rename = "homeOffice")]
+    HomeOffice,
+    #[serde(rename = "officeLocation")]
+    OfficeLocation,
+    #[serde(rename = "customLocation")]
+    CustomLocation,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventOfficeLocation {
+    #[serde(rename = "buildingId")]
+    pub building_id: Option<String>,
+    #[serde(rename = "deskId")]
+    pub desk_id: Option<String>,
+    #[serde(rename = "floorId")]
+    pub floor_id: Option<String>,
+    #[serde(rename = "floorSectionId")]
+    pub floor_section_id: Option<String>,
+    pub label: Option<String>,
+    pub typ: EventOfficeLocationType,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventCustomLocation {
+    pub label: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventWorkingLocation {
+    #[serde(rename = "customLocation")]
+    pub custom_location: Option<EventCustomLocation>,
+    #[serde(rename = "homeOffice")]
+    pub home_office: Option<String>,
+    pub office_location: Option<EventOfficeLocation>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub enum EventVisibility {
+    #[default]
+    #[serde(rename = "default")]
+    Default,
+    #[serde(rename = "public")]
+    Public,
+    #[serde(rename = "private")]
+    Private,
+    #[serde(rename = "confidential")]
+    Confidential,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub enum EventTransparency {
+    #[default]
+    #[serde(rename = "opaque")]
+    Opaque,
+    #[serde(rename = "transparent")]
+    Transparent,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventStatus {
+    #[serde(rename = "confirmed")]
+    Confirmed,
+    #[serde(rename = "tentative")]
+    Tentative,
+    #[serde(rename = "cancelled")]
+    Cancelled,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventSource {
+    pub title: String,
+    pub url: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventReminder {
+    pub overrides: Vec<DefaultReminder>,
+    #[serde(rename = "useDefault")]
+    pub use_default: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventOrganizer {
+    #[serde(rename = "displayName")]
+    pub display_name: String,
+    pub email: String,
+    pub id: String,
+    #[serde(rename = "self")]
+    pub appears_as_self: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EventGadgetDisplay {
+    #[serde(rename = "icon")]
+    Icon,
+    #[serde(rename = "chip")]
+    Chip,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventGadget {
+    pub display: EventGadgetDisplay,
+    pub preferences: BTreeMap<String, String>,
+    // a lot of deprecated fields in this struct.
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventExtendedProperties {
+    pub private: BTreeMap<String, String>,
+    pub shared: BTreeMap<String, String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
