@@ -1,6 +1,8 @@
-use crate::{resources::ConferenceProperties, sendable::Sendable};
+use crate::{
+    resources::ConferenceProperties,
+    sendable::{QueryParams, Sendable},
+};
 use serde_derive::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 
 /*
  * from: https://developers.google.com/calendar/api/v3/reference/calendars#resource
@@ -30,7 +32,7 @@ impl Sendable for Calendar {
         format!("calendars/{}", self.id)
     }
 
-    fn query(&self) -> BTreeMap<String, String> {
+    fn query(&self) -> QueryParams {
         Default::default()
     }
 }

@@ -34,7 +34,7 @@ impl Client {
             req = req.headers(headers.clone())
         }
 
-        Ok(self.set_bearer(req).send().await?)
+        Ok(self.set_bearer(req).send().await?.error_for_status()?)
     }
 
     pub async fn get(

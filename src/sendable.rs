@@ -3,6 +3,9 @@ use url::Url;
 
 const BASE_URL: &str = "https://www.googleapis.com/calendar/v3";
 
+pub type QueryParams = BTreeMap<String, String>;
+pub type AdditionalProperties = BTreeMap<String, String>;
+
 pub trait Sendable
 where
     Self: serde::Serialize,

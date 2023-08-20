@@ -1,7 +1,6 @@
 use crate::resources::ConferenceProperties;
-use crate::sendable::Sendable;
+use crate::sendable::{QueryParams, Sendable};
 use serde_derive::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 
 /*
  * from: https://developers.google.com/calendar/api/v3/reference/calendarList#resource
@@ -41,7 +40,7 @@ pub struct CalendarListItem {
     #[serde(rename = "notificationSettings")]
     pub notification_settings: NotificationSettings,
     #[serde(skip)]
-    query_string: BTreeMap<String, String>,
+    query_string: QueryParams,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -96,7 +95,7 @@ impl Sendable for CalendarListItem {
         format!("users/me/calendarList/{}", self.id)
     }
 
-    fn query(&self) -> BTreeMap<String, String> {
+    fn query(&self) -> QueryParams {
         Default::default()
     }
 }
@@ -106,7 +105,7 @@ impl Sendable for CalendarList {
         String::from("users/me/calendarList")
     }
 
-    fn query(&self) -> BTreeMap<String, String> {
+    fn query(&self) -> QueryParams {
         Default::default()
     }
 }

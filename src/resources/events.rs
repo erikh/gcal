@@ -1,6 +1,11 @@
-use crate::{resources::DefaultReminder, sendable::Sendable};
+use crate::{
+    client::Client,
+    resources::DefaultReminder,
+    sendable::{AdditionalProperties, QueryParams, Sendable},
+};
+use reqwest::Response;
 use serde_derive::{Deserialize, Serialize};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
 /*
  * from: https://developers.google.com/calendar/api/v3/reference/events#resource
@@ -13,6 +18,8 @@ fn default_kind() -> String {
 fn default_true() -> Option<bool> {
     Some(true)
 }
+
+pub struct EventClient(Client);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Event {
@@ -68,6 +75,8 @@ pub struct Event {
     pub updated: String,
     pub visibility: Option<EventVisibility>,
     pub working_location: Option<EventWorkingLocation>,
+    #[serde(skip)]
+    query_string: QueryParams,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -174,14 +183,14 @@ pub enum EventGadgetDisplay {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EventGadget {
     pub display: EventGadgetDisplay,
-    pub preferences: BTreeMap<String, String>,
-    // a lot of deprecated fields in this struct.
+    pub preferences: AdditionalProperties,
+    // a lot of deprecated fields in this struct
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EventExtendedProperties {
-    pub private: BTreeMap<String, String>,
-    pub shared: BTreeMap<String, String>,
+    pub private: AdditionalProperties,
+    pub shared: AdditionalProperties,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -356,7 +365,17 @@ impl Sendable for Event {
         )
     }
 
-    fn query(&self) -> BTreeMap<String, String> {
+    fn query(&self) -> QueryParams {
         Default::default()
+    }
+}
+
+impl EventClient {
+    pub fn new(client: Client) -> Self {
+        Self(client)
+    }
+
+    pub async fn delete(&self, event: Event) -> Result<Response, anyhow::Error> {
+        self.0.delete(None, event).await
     }
 }
