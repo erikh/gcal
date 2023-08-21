@@ -1,3 +1,4 @@
+use crate::client::Client;
 use crate::resources::ConferenceProperties;
 use crate::sendable::{QueryParams, Sendable};
 use serde_derive::{Deserialize, Serialize};
@@ -5,6 +6,8 @@ use serde_derive::{Deserialize, Serialize};
 /*
  * from: https://developers.google.com/calendar/api/v3/reference/calendarList#resource
  */
+
+pub struct CalendarListClient(Client);
 
 fn default_kind() -> String {
     "calendar#calendarListEntry".to_string()
@@ -87,8 +90,8 @@ pub enum CalendarAccessRole {
     Owner,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CalendarList;
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct CalendarList(QueryParams);
 
 impl Sendable for CalendarListItem {
     fn path(&self, _action: Option<String>) -> String {
@@ -106,6 +109,19 @@ impl Sendable for CalendarList {
     }
 
     fn query(&self) -> QueryParams {
-        Default::default()
+        self.0.clone()
+    }
+}
+
+impl CalendarListClient {
+    pub fn new(client: Client) -> Self {
+        Self(client)
+    }
+
+    pub async fn list(&self) -> Result<Vec<CalendarList>, anyhow::Error> {
+        // FIXME get all the results lol
+        let mut cl = CalendarList::default();
+        cl.0.insert("minAccessRole".to_string(), "owner".to_string());
+        Ok(self.0.get(None, cl).await?.json().await?)
     }
 }
