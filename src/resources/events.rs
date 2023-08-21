@@ -21,7 +21,7 @@ fn default_true() -> Option<bool> {
 
 pub struct EventClient(Client);
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Event {
     #[serde(default = "default_kind")]
     pub kind: String,
@@ -79,8 +79,9 @@ pub struct Event {
     query_string: QueryParams,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventOfficeLocationType {
+    #[default]
     #[serde(rename = "homeOffice")]
     HomeOffice,
     #[serde(rename = "officeLocation")]
@@ -89,7 +90,7 @@ pub enum EventOfficeLocationType {
     CustomLocation,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventOfficeLocation {
     #[serde(rename = "buildingId")]
     pub building_id: Option<String>,
@@ -103,12 +104,12 @@ pub struct EventOfficeLocation {
     pub typ: EventOfficeLocationType,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventCustomLocation {
     pub label: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventWorkingLocation {
     #[serde(rename = "customLocation")]
     pub custom_location: Option<EventCustomLocation>,
@@ -139,30 +140,31 @@ pub enum EventTransparency {
     Transparent,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventStatus {
     #[serde(rename = "confirmed")]
     Confirmed,
+    #[default]
     #[serde(rename = "tentative")]
     Tentative,
     #[serde(rename = "cancelled")]
     Cancelled,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventSource {
     pub title: String,
     pub url: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventReminder {
     pub overrides: Vec<DefaultReminder>,
     #[serde(rename = "useDefault")]
     pub use_default: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventOrganizer {
     #[serde(rename = "displayName")]
     pub display_name: String,
@@ -172,29 +174,31 @@ pub struct EventOrganizer {
     pub appears_as_self: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventGadgetDisplay {
+    #[default]
     #[serde(rename = "icon")]
     Icon,
     #[serde(rename = "chip")]
     Chip,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventGadget {
     pub display: EventGadgetDisplay,
     pub preferences: AdditionalProperties,
     // a lot of deprecated fields in this struct
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventExtendedProperties {
     pub private: AdditionalProperties,
     pub shared: AdditionalProperties,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventType {
+    #[default]
     #[serde(rename = "default")]
     Default,
     #[serde(rename = "outOfOffice")]
@@ -205,7 +209,7 @@ pub enum EventType {
     WorkingLocation,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventCalendarDate {
     pub date: Option<String>,
     #[serde(rename = "dateTime")]
@@ -214,7 +218,7 @@ pub struct EventCalendarDate {
     pub time_zone: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventConferenceData {
     #[serde(rename = "conferenceId")]
     pub conference_id: Option<String>,
@@ -228,7 +232,7 @@ pub struct EventConferenceData {
     pub signature: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventCreator {
     #[serde(rename = "displayName")]
     pub display_name: Option<String>,
@@ -238,7 +242,7 @@ pub struct EventCreator {
     pub appears_as_self: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventConferenceEntryPoint {
     #[serde(rename = "entryPointType")]
     entry_point_type: EventConferenceEntryPointType,
@@ -251,8 +255,9 @@ pub struct EventConferenceEntryPoint {
     uri: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventConferenceEntryPointType {
+    #[default]
     #[serde(rename = "video")]
     Video,
     #[serde(rename = "phone")]
@@ -263,7 +268,7 @@ pub enum EventConferenceEntryPointType {
     More,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventCreateConferenceRequest {
     #[serde(rename = "conferenceSolutionKey")]
     conference_solution_key: EventConferenceSolutionKey,
@@ -272,14 +277,15 @@ pub struct EventCreateConferenceRequest {
     status: EventConferenceStatus,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventConferenceStatus {
     #[serde(rename = "statusCode")]
     status_code: EventConferenceStatusCode,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventConferenceStatusCode {
+    #[default]
     #[serde(rename = "pending")]
     Pending,
     #[serde(rename = "success")]
@@ -288,33 +294,33 @@ pub enum EventConferenceStatusCode {
     Failure,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventConferenceSolution {
     #[serde(rename = "iconUri")]
     pub icon_uri: String,
     pub key: EventConferenceSolutionKey,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventConferenceSolutionKey {
     #[serde(rename = "type")]
     pub typ: EventConferenceSolutionKeyType,
     pub name: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventConferenceSolutionKeyType {
-    #[serde(rename = "eventHangout")]
     EventHangout,
     #[serde(rename = "eventNamedHangout")]
     EventNamedHangout,
+    #[default]
     #[serde(rename = "hangoutsMeet")]
     HangoutsMeet,
     #[serde(rename = "addOn")]
     AddOn,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventAttendees {
     #[serde(rename = "additionalGuests")]
     pub additional_guests: Option<u8>,
@@ -330,8 +336,9 @@ pub struct EventAttendees {
     pub response_status: EventResponseStatus,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EventResponseStatus {
+    #[default]
     #[serde(rename = "needsAction")]
     NeedsAction,
     #[serde(rename = "declined")]
@@ -342,7 +349,7 @@ pub enum EventResponseStatus {
     Accepted,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct EventAttachment {
     #[serde(rename = "fileId")]
     pub file_id: String,
