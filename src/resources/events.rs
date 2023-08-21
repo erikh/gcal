@@ -1,6 +1,6 @@
 use crate::{
     client::Client,
-    resources::DefaultReminder,
+    resources::{DefaultReminder, SendUpdates},
     sendable::{AdditionalProperties, QueryParams, Sendable},
 };
 use reqwest::Response;
@@ -395,6 +395,34 @@ impl EventClient {
     }
 
     pub async fn import(&self, event: Event) -> Result<Event, anyhow::Error> {
+        let resp = self.0.post(Some("import".to_string()), event).await?;
+
+        Ok(resp.json().await?)
+    }
+
+    pub async fn insert(
+        &self,
+        mut event: Event,
+        send_updates: Option<SendUpdates>,
+        max_attendees: Option<u8>,
+    ) -> Result<Event, anyhow::Error> {
+        if !event.attachments.is_empty() {
+            event
+                .query_string
+                .insert("supportsAttachments".to_string(), "true".to_string());
+        }
+
+        event.query_string.insert(
+            "sendUpdates".to_string(),
+            send_updates.map_or_else(|| "false".to_string(), |x| x.to_string()),
+        );
+
+        if let Some(ma) = max_attendees {
+            event
+                .query_string
+                .insert("maxAttendees".to_string(), format!("{}", ma));
+        }
+
         let resp = self.0.post(Some("import".to_string()), event).await?;
 
         Ok(resp.json().await?)
