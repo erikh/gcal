@@ -365,12 +365,12 @@ pub struct EventAttachment {
 impl Sendable for Event {
     fn path(&self, action: Option<String>) -> String {
         format!(
-            "calendars/{}/events{}/{}",
+            "calendars/{}/events{}{}",
             self.calendar_id,
             self.id
                 .clone()
                 .map_or_else(|| String::new(), |x| format!("/{}", x)),
-            action.unwrap_or_default()
+            action.map_or_else(|| String::new(), |x| format!("/{}", x))
         )
     }
 
@@ -426,5 +426,18 @@ impl EventClient {
         let resp = self.0.post(Some("import".to_string()), event).await?;
 
         Ok(resp.json().await?)
+    }
+
+    pub async fn instances(&self, event: Event) -> Result<Vec<Event>, anyhow::Error> {
+        Ok(self
+            .0
+            .get(Some("instances".to_string()), event)
+            .await?
+            .json()
+            .await?)
+    }
+
+    pub async fn list(&self) -> Result<Vec<Event>, anyhow::Error> {
+        Ok(self.0.get(None, Event::default()).await?.json().await?)
     }
 }
