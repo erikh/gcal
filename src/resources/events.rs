@@ -458,4 +458,20 @@ impl EventClient {
         self.0.post(Some("move".to_string()), event).await?;
         Ok(())
     }
+
+    pub async fn add(&self, text: String) -> Result<Event, anyhow::Error> {
+        let mut event = Event::default();
+        event.query_string.insert("text".to_string(), text);
+
+        Ok(self
+            .0
+            .post(Some("quickAdd".to_string()), event)
+            .await?
+            .json()
+            .await?)
+    }
+
+    pub async fn update(&self, event: Event) -> Result<Event, anyhow::Error> {
+        Ok(self.0.put(None, event).await?.json().await?)
+    }
 }
