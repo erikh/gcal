@@ -440,4 +440,22 @@ impl EventClient {
     pub async fn list(&self) -> Result<Vec<Event>, anyhow::Error> {
         Ok(self.0.get(None, Event::default()).await?.json().await?)
     }
+
+    pub async fn move_to_calendar(
+        &self,
+        mut event: Event,
+        destination: String,
+        send_updates: Option<SendUpdates>,
+    ) -> Result<(), anyhow::Error> {
+        event
+            .query_string
+            .insert("destination".to_string(), destination);
+        event.query_string.insert(
+            "sendUpdates".to_string(),
+            send_updates.map_or_else(|| "false".to_string(), |x| x.to_string()),
+        );
+
+        self.0.post(Some("move".to_string()), event).await?;
+        Ok(())
+    }
 }
