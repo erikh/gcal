@@ -25,7 +25,7 @@ pub struct EventClient(Client);
 pub struct Event {
     #[serde(default = "default_kind")]
     pub kind: String,
-    pub id: String,
+    pub id: Option<String>,
     pub calendar_id: String,
     pub attachments: Vec<EventAttachment>,
     #[serde(rename = "attendeesOmitted")]
@@ -365,15 +365,17 @@ pub struct EventAttachment {
 impl Sendable for Event {
     fn path(&self, action: Option<String>) -> String {
         format!(
-            "calendars/{}/events/{}/{}",
+            "calendars/{}/events{}/{}",
             self.calendar_id,
-            self.id,
+            self.id
+                .clone()
+                .map_or_else(|| String::new(), |x| format!("/{}", x)),
             action.unwrap_or_default()
         )
     }
 
     fn query(&self) -> QueryParams {
-        Default::default()
+        self.query_string.clone()
     }
 }
 
@@ -388,6 +390,12 @@ impl EventClient {
 
     pub async fn get(&self, id: String) -> Result<Event, anyhow::Error> {
         let resp = self.0.get(Some(id), Event::default()).await?;
+
+        Ok(resp.json().await?)
+    }
+
+    pub async fn import(&self, event: Event) -> Result<Event, anyhow::Error> {
+        let resp = self.0.post(Some("import".to_string()), event).await?;
 
         Ok(resp.json().await?)
     }
