@@ -385,4 +385,10 @@ impl EventClient {
     pub async fn delete(&self, event: Event) -> Result<Response, anyhow::Error> {
         self.0.delete(None, event).await
     }
+
+    pub async fn get(&self, id: String) -> Result<Event, anyhow::Error> {
+        let resp = self.0.get(Some(id), Event::default()).await?;
+
+        Ok(resp.json().await?)
+    }
 }
