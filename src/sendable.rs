@@ -15,7 +15,7 @@ where
 
     fn url(&self, action: Option<String>) -> Result<Url, anyhow::Error> {
         Ok(Url::parse_with_params(
-            &format!("{}{}", BASE_URL, self.path(action)),
+            &format!("{}/{}", BASE_URL, self.path(action)),
             self.query(),
         )?)
     }

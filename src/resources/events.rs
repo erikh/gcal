@@ -437,8 +437,10 @@ impl EventClient {
             .await?)
     }
 
-    pub async fn list(&self) -> Result<Vec<Event>, anyhow::Error> {
-        Ok(self.0.get(None, Event::default()).await?.json().await?)
+    pub async fn list(&self, calendar_id: String) -> Result<Vec<Event>, anyhow::Error> {
+        let mut event = Event::default();
+        event.calendar_id = calendar_id;
+        Ok(self.0.get(None, event).await?.json().await?)
     }
 
     pub async fn move_to_calendar(

@@ -118,7 +118,7 @@ impl CalendarListClient {
         Self(client)
     }
 
-    pub async fn list(&self) -> Result<Vec<CalendarList>, anyhow::Error> {
+    pub async fn list(&self) -> Result<Vec<CalendarListItem>, anyhow::Error> {
         // FIXME get all the results lol
         let mut cl = CalendarList::default();
         cl.0.insert("minAccessRole".to_string(), "owner".to_string());

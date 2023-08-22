@@ -4,6 +4,7 @@ use reqwest::{
     ClientBuilder, RequestBuilder, Response,
 };
 
+#[derive(Debug, Clone)]
 pub struct Client {
     client: reqwest::Client,
     access_key: String,
@@ -26,7 +27,7 @@ impl Client {
     }
 
     fn set_bearer(&self, req: RequestBuilder) -> RequestBuilder {
-        req.header("Authentication", format!("Bearer {}", self.access_key))
+        req.header("Authorization", format!("Bearer {}", self.access_key))
     }
 
     async fn send(&self, mut req: RequestBuilder) -> Result<Response, anyhow::Error> {
