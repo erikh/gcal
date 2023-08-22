@@ -1,5 +1,5 @@
 use crate::client::Client;
-use crate::resources::ConferenceProperties;
+use crate::resources::{CalendarAccessRole, ConferenceProperties};
 use crate::sendable::{QueryParams, Sendable};
 use crate::DefaultReminder;
 use serde_derive::{Deserialize, Serialize};
@@ -75,15 +75,6 @@ pub enum NotificationSettingType {
     EventCancellation,
     EventResponse,
     Agenda,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub enum CalendarAccessRole {
-    FreeBusyReader,
-    Reader,
-    Writer,
-    Owner,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]

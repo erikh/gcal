@@ -1,6 +1,6 @@
 use crate::{
     client::Client,
-    resources::{DefaultReminder, SendUpdates},
+    resources::{CalendarAccessRole, DefaultReminder, SendUpdates},
     sendable::{AdditionalProperties, QueryParams, Sendable},
 };
 use reqwest::Response;
@@ -11,8 +11,12 @@ use std::collections::BTreeSet;
  * from: https://developers.google.com/calendar/api/v3/reference/events#resource
  */
 
-fn default_kind() -> String {
+fn default_event_kind() -> String {
     "calendar#event".to_string()
+}
+
+fn default_events_kind() -> String {
+    "calendar#events".to_string()
 }
 
 fn default_true() -> Option<bool> {
@@ -23,48 +27,64 @@ pub struct EventClient(Client);
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
+pub struct Events {
+    #[serde(default = "default_events_kind")]
+    pub kind: String,
+    pub etag: String,
+    pub summary: String,
+    pub description: String,
+    pub updated: String,
+    pub time_zone: String,
+    pub access_role: CalendarAccessRole,
+    pub default_reminders: Vec<DefaultReminder>,
+    pub next_page_token: String,
+    pub items: Vec<Event>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct Event {
-    #[serde(default = "default_kind")]
+    #[serde(default = "default_event_kind")]
     pub kind: String,
     pub id: Option<String>,
-    pub calendar_id: String,
-    pub attachments: Vec<EventAttachment>,
+    pub calendar_id: Option<String>,
+    pub attachments: Option<Vec<EventAttachment>>,
     pub attendees_omitted: Option<bool>,
-    pub attendees: Vec<EventAttendees>,
+    pub attendees: Option<Vec<EventAttendees>>,
     pub color_id: Option<String>,
-    pub conference_data: EventConferenceData,
-    pub created: String,
-    pub creator: EventCreator,
+    pub conference_data: Option<EventConferenceData>,
+    pub created: Option<String>,
+    pub creator: Option<EventCreator>,
     pub description: Option<String>,
-    pub end: EventCalendarDate,
-    pub end_time_unspecified: bool,
+    pub end: Option<EventCalendarDate>,
+    pub end_time_unspecified: Option<bool>,
     pub etag: String,
-    pub event_type: EventType,
-    pub extended_properties: EventExtendedProperties,
-    pub gadget: EventGadget,
+    pub event_type: Option<EventType>,
+    pub extended_properties: Option<EventExtendedProperties>,
+    pub gadget: Option<EventGadget>,
     #[serde(rename = "guestsCanInviteOthers", default = "default_true")]
     pub guests_invite_others: Option<bool>,
     pub guests_can_modify: Option<bool>,
     #[serde(default = "default_true")]
     pub guests_can_see_other_guests: Option<bool>,
-    pub hangout_link: String,
-    pub html_link: String,
+    pub hangout_link: Option<String>,
+    pub html_link: Option<String>,
     #[serde(rename = "iCalUID")]
-    pub ical_uid: String,
-    pub location: String,
-    pub locked: bool,
+    pub ical_uid: Option<String>,
+    pub location: Option<String>,
+    pub locked: Option<bool>,
     pub organizer: Option<EventOrganizer>,
-    pub original_start_time: EventCalendarDate,
-    pub private_copy: bool,
-    pub recurrence: BTreeSet<String>,
+    pub original_start_time: Option<EventCalendarDate>,
+    pub private_copy: Option<bool>,
+    pub recurrence: Option<BTreeSet<String>>,
     pub reminders: Option<EventReminder>,
-    pub sequence: u64,
+    pub sequence: Option<u64>,
     pub source: Option<EventSource>,
-    pub start: EventCalendarDate,
+    pub start: Option<EventCalendarDate>,
     pub status: EventStatus,
-    pub summary: String,
+    pub summary: Option<String>,
     pub transparency: Option<EventTransparency>,
-    pub updated: String,
+    pub updated: Option<String>,
     pub visibility: Option<EventVisibility>,
     pub working_location: Option<EventWorkingLocation>,
     #[serde(skip)]
@@ -142,18 +162,18 @@ pub struct EventSource {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventReminder {
-    pub overrides: Vec<DefaultReminder>,
+    pub overrides: Option<Vec<DefaultReminder>>,
     pub use_default: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventOrganizer {
-    pub display_name: String,
+    pub display_name: Option<String>,
     pub email: String,
-    pub id: String,
+    pub id: Option<String>,
     #[serde(rename = "self")]
-    pub appears_as_self: bool,
+    pub appears_as_self: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -176,7 +196,7 @@ pub struct EventGadget {
 #[serde(rename_all = "camelCase")]
 pub struct EventExtendedProperties {
     pub private: AdditionalProperties,
-    pub shared: AdditionalProperties,
+    pub shared: Option<AdditionalProperties>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -215,7 +235,7 @@ pub struct EventCreator {
     pub email: Option<String>,
     pub id: Option<String>,
     #[serde(rename = "self")]
-    pub appears_as_self: bool,
+    pub appears_as_self: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -295,11 +315,13 @@ pub struct EventAttendees {
     pub comment: Option<String>,
     pub display_name: Option<String>,
     pub email: String,
-    pub id: String,
+    pub id: Option<String>,
     pub optional: Option<bool>,
     pub organizer: Option<bool>,
     pub resource: Option<bool>,
     pub response_status: EventResponseStatus,
+    #[serde(rename = "self")]
+    pub appears_as_self: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -326,7 +348,7 @@ impl Sendable for Event {
     fn path(&self, action: Option<String>) -> String {
         format!(
             "calendars/{}/events{}{}",
-            self.calendar_id,
+            self.calendar_id.clone().unwrap(),
             self.id
                 .clone()
                 .map_or_else(|| String::new(), |x| format!("/{}", x)),
@@ -366,10 +388,12 @@ impl EventClient {
         send_updates: Option<SendUpdates>,
         max_attendees: Option<u8>,
     ) -> Result<Event, anyhow::Error> {
-        if !event.attachments.is_empty() {
-            event
-                .query_string
-                .insert("supportsAttachments".to_string(), "true".to_string());
+        if let Some(attachments) = event.attachments.clone() {
+            if !attachments.is_empty() {
+                event
+                    .query_string
+                    .insert("supportsAttachments".to_string(), "true".to_string());
+            }
         }
 
         event.query_string.insert(
@@ -399,12 +423,12 @@ impl EventClient {
 
     pub async fn list(&self, calendar_id: String) -> Result<Vec<Event>, anyhow::Error> {
         let mut event = Event::default();
-        event.calendar_id = calendar_id;
+        event.calendar_id = Some(calendar_id);
 
         let resp = self.0.get(None, event).await?;
         let text = resp.text().await?;
         eprintln!("{}", text);
-        Ok(serde_json::from_str(&text)?)
+        Ok(serde_json::from_str::<Events>(&text)?.items)
     }
 
     pub async fn move_to_calendar(

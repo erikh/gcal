@@ -5,7 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 pub struct ConferenceProperties {
     #[serde(rename = "allowedConferenceSolutionTypes")]
     pub allowed_solution_types: Vec<AllowedSolutionType>,
-    pub default_reminders: Vec<DefaultReminder>,
+    pub default_reminders: Option<Vec<DefaultReminder>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
