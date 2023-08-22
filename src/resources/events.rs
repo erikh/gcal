@@ -37,7 +37,7 @@ pub struct Events {
     pub time_zone: String,
     pub access_role: CalendarAccessRole,
     pub default_reminders: Vec<DefaultReminder>,
-    pub next_page_token: String,
+    pub next_page_token: Option<String>,
     pub items: Vec<Event>,
 }
 
@@ -421,8 +421,19 @@ impl EventClient {
             .await?)
     }
 
-    pub async fn list(&self, calendar_id: String) -> Result<Vec<Event>, anyhow::Error> {
+    pub async fn list(
+        &self,
+        calendar_id: String,
+        start_time: chrono::DateTime<chrono::Local>,
+        end_time: chrono::DateTime<chrono::Local>,
+    ) -> Result<Vec<Event>, anyhow::Error> {
         let mut event = Event::default();
+        event
+            .query_string
+            .insert("timeMin".to_string(), start_time.to_rfc3339());
+        event
+            .query_string
+            .insert("timeMax".to_string(), end_time.to_rfc3339());
         event.calendar_id = Some(calendar_id);
 
         let resp = self.0.get(None, event).await?;

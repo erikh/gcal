@@ -83,7 +83,7 @@ pub struct CalendarList {
     #[serde(default = "default_entry_kind")]
     pub kind: String,
     pub etag: String,
-    pub next_sync_token: String,
+    pub next_sync_token: Option<String>,
     pub items: Vec<CalendarListItem>,
 
     #[serde(skip)]
