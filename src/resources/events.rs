@@ -436,10 +436,7 @@ impl EventClient {
             .insert("timeMax".to_string(), end_time.to_rfc3339());
         event.calendar_id = Some(calendar_id);
 
-        let resp = self.0.get(None, event).await?;
-        let text = resp.text().await?;
-        eprintln!("{}", text);
-        Ok(serde_json::from_str::<Events>(&text)?.items)
+        Ok(self.0.get(None, event).await?.json::<Events>().await?.items)
     }
 
     pub async fn move_to_calendar(

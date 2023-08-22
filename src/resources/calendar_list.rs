@@ -121,8 +121,12 @@ impl CalendarListClient {
         cl.query_string
             .insert("minAccessRole".to_string(), "owner".to_string());
 
-        let text = self.0.get(None, cl).await?.text().await?;
-        eprintln!("{}", text);
-        Ok(serde_json::from_str::<CalendarList>(&text)?.items)
+        Ok(self
+            .0
+            .get(None, cl)
+            .await?
+            .json::<CalendarList>()
+            .await?
+            .items)
     }
 }
