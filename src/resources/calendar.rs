@@ -13,6 +13,7 @@ fn default_kind() -> String {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Calendar {
     #[serde(default = "default_kind")]
     pub kind: String,
@@ -21,9 +22,7 @@ pub struct Calendar {
     pub summary: String,
     pub description: String,
     pub location: String,
-    #[serde(rename = "timeZone")]
     pub time_zone: String,
-    #[serde(rename = "conferenceProperties")]
     pub conference_properties: ConferenceProperties,
 }
 

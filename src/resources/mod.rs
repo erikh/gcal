@@ -10,13 +10,11 @@ pub use events::*;
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum SendUpdates {
     #[default]
-    #[serde(rename = "all")]
     All,
-    #[serde(rename = "externalOnly")]
     ExternalOnly,
-    #[serde(rename = "none")]
     None,
 }
 

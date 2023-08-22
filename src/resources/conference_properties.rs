@@ -1,20 +1,22 @@
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ConferenceProperties {
     #[serde(rename = "allowedConferenceSolutionTypes")]
     pub allowed_solution_types: Vec<AllowedSolutionType>,
-    #[serde(rename = "defaultReminders")]
     pub default_reminders: Vec<DefaultReminder>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DefaultReminder {
     pub method: ReminderMethod,
     pub minutes: u16,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum ReminderMethod {
     #[serde(rename = "email")]
     EMail,
@@ -23,11 +25,9 @@ pub enum ReminderMethod {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum AllowedSolutionType {
-    #[serde(rename = "eventHangout")]
     EventHangout,
-    #[serde(rename = "eventNamedHangout")]
     EventNamedHangout,
-    #[serde(rename = "hangoutsMeet")]
     HangoutsMeet,
 }
