@@ -8,15 +8,16 @@ use serde_derive::{Deserialize, Serialize};
  * from: https://developers.google.com/calendar/api/v3/reference/calendars#resource
  */
 
-fn default_kind() -> String {
-    "calendar#calendar".to_string()
+fn default_kind() -> Option<String> {
+    Some("calendar#calendar".to_string())
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Calendar {
     #[serde(default = "default_kind")]
-    pub kind: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
     pub id: String,
     pub etag: String,
     pub summary: String,

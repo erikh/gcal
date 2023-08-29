@@ -11,12 +11,12 @@ use std::collections::BTreeSet;
  * from: https://developers.google.com/calendar/api/v3/reference/events#resource
  */
 
-fn default_event_kind() -> String {
-    "calendar#event".to_string()
+fn default_event_kind() -> Option<String> {
+    Some("calendar#event".to_string())
 }
 
-fn default_events_kind() -> String {
-    "calendar#events".to_string()
+fn default_events_kind() -> Option<String> {
+    Some("calendar#events".to_string())
 }
 
 fn default_true() -> Option<bool> {
@@ -29,15 +29,19 @@ pub struct EventClient(Client);
 #[serde(rename_all = "camelCase")]
 pub struct Events {
     #[serde(default = "default_events_kind")]
-    pub kind: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
     pub etag: String,
     pub summary: String,
     pub description: String,
     pub updated: String,
     pub time_zone: String,
     pub access_role: CalendarAccessRole,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub default_reminders: Vec<DefaultReminder>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub next_page_token: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub items: Vec<Event>,
 }
 
@@ -45,47 +49,86 @@ pub struct Events {
 #[serde(rename_all = "camelCase")]
 pub struct Event {
     #[serde(default = "default_event_kind")]
-    pub kind: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub calendar_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attachments: Option<Vec<EventAttachment>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attendees_omitted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attendees: Option<Vec<EventAttendees>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub conference_data: Option<EventConferenceData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub creator: Option<EventCreator>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub end: Option<EventCalendarDate>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub end_time_unspecified: Option<bool>,
-    pub etag: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub etag: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub event_type: Option<EventType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub extended_properties: Option<EventExtendedProperties>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gadget: Option<EventGadget>,
     #[serde(rename = "guestsCanInviteOthers", default = "default_true")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub guests_invite_others: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub guests_can_modify: Option<bool>,
     #[serde(default = "default_true")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub guests_can_see_other_guests: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub hangout_link: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub html_link: Option<String>,
     #[serde(rename = "iCalUID")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ical_uid: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub locked: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub organizer: Option<EventOrganizer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub original_start_time: Option<EventCalendarDate>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub private_copy: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub recurrence: Option<BTreeSet<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reminders: Option<EventReminder>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sequence: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<EventSource>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<EventCalendarDate>,
-    pub status: EventStatus,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<EventStatus>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub summary: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub transparency: Option<EventTransparency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub visibility: Option<EventVisibility>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub working_location: Option<EventWorkingLocation>,
     #[serde(skip)]
     query_string: QueryParams,
@@ -103,10 +146,15 @@ pub enum EventOfficeLocationType {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventOfficeLocation {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub building_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub desk_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub floor_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub floor_section_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
     pub typ: EventOfficeLocationType,
 }
@@ -120,8 +168,11 @@ pub struct EventCustomLocation {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventWorkingLocation {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_location: Option<EventCustomLocation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub home_office: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub office_location: Option<EventOfficeLocation>,
 }
 
@@ -162,6 +213,7 @@ pub struct EventSource {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventReminder {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<DefaultReminder>>,
     pub use_default: bool,
 }
@@ -171,6 +223,7 @@ pub struct EventReminder {
 pub struct EventOrganizer {
     pub display_name: Option<String>,
     pub email: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "self")]
     pub appears_as_self: Option<bool>,
@@ -196,6 +249,7 @@ pub struct EventGadget {
 #[serde(rename_all = "camelCase")]
 pub struct EventExtendedProperties {
     pub private: AdditionalProperties,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub shared: Option<AdditionalProperties>,
 }
 
@@ -212,29 +266,42 @@ pub enum EventType {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventCalendarDate {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub date_time: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub time_zone: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventConferenceData {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub conference_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub conference_solution: Option<EventConferenceSolution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub create_request: Option<EventCreateConferenceRequest>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub entry_points: Vec<EventConferenceEntryPoint>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub notes: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventCreator {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "self")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub appears_as_self: Option<bool>,
 }
 
@@ -243,10 +310,15 @@ pub struct EventCreator {
 pub struct EventConferenceEntryPoint {
     entry_point_type: EventConferenceEntryPointType,
     label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     meeting_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     passcode: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     password: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pin: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     uri: Option<String>,
 }
 
@@ -295,6 +367,7 @@ pub struct EventConferenceSolution {
 pub struct EventConferenceSolutionKey {
     #[serde(rename = "type")]
     pub typ: EventConferenceSolutionKeyType,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
@@ -311,16 +384,24 @@ pub enum EventConferenceSolutionKeyType {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventAttendees {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_guests: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
     pub email: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub organizer: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource: Option<bool>,
     pub response_status: EventResponseStatus,
     #[serde(rename = "self")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub appears_as_self: Option<bool>,
 }
 
@@ -382,29 +463,13 @@ impl EventClient {
         Ok(resp.json().await?)
     }
 
-    pub async fn insert(
-        &self,
-        mut event: Event,
-        send_updates: Option<SendUpdates>,
-        max_attendees: Option<u8>,
-    ) -> Result<Event, anyhow::Error> {
+    pub async fn insert(&self, mut event: Event) -> Result<Event, anyhow::Error> {
         if let Some(attachments) = event.attachments.clone() {
             if !attachments.is_empty() {
                 event
                     .query_string
                     .insert("supportsAttachments".to_string(), "true".to_string());
             }
-        }
-
-        event.query_string.insert(
-            "sendUpdates".to_string(),
-            send_updates.map_or_else(|| "false".to_string(), |x| x.to_string()),
-        );
-
-        if let Some(ma) = max_attendees {
-            event
-                .query_string
-                .insert("maxAttendees".to_string(), format!("{}", ma));
         }
 
         let resp = self.0.post(Some("import".to_string()), event).await?;
