@@ -479,7 +479,7 @@ impl EventClient {
         Ok(resp.json().await?)
     }
 
-    pub async fn instances(&self, event: Event) -> Result<Vec<Event>, ClientError> {
+    pub async fn instances(&self, event: Event) -> Result<Events, ClientError> {
         Ok(self
             .0
             .get(Some("instances".to_string()), event)
