@@ -21,8 +21,10 @@
 //! }
 //! ```
 pub mod client;
+pub mod oauth;
 pub mod resources;
 pub mod sendable;
 
 pub use client::*;
+pub use oauth::*;
 pub use resources::*;
