@@ -3,7 +3,6 @@ use crate::{
     resources::{CalendarAccessRole, DefaultReminder, SendUpdates},
     sendable::{AdditionalProperties, QueryParams, Sendable},
 };
-use reqwest::Response;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 
@@ -447,8 +446,9 @@ impl EventClient {
         Self(client)
     }
 
-    pub async fn delete(&self, event: Event) -> Result<Response, ClientError> {
-        self.0.delete(None, event).await
+    pub async fn delete(&self, event: Event) -> Result<(), ClientError> {
+        self.0.delete(None, event).await?;
+        Ok(())
     }
 
     pub async fn get(&self, id: String) -> Result<Event, ClientError> {
