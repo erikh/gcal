@@ -1,4 +1,4 @@
-use crate::client::Client;
+use crate::client::{Client, ClientError};
 use crate::resources::{CalendarAccessRole, ConferenceProperties};
 use crate::sendable::{QueryParams, Sendable};
 use crate::DefaultReminder;
@@ -133,7 +133,7 @@ impl CalendarListClient {
         Self(client)
     }
 
-    pub async fn list(&self) -> Result<Vec<CalendarListItem>, anyhow::Error> {
+    pub async fn list(&self) -> Result<Vec<CalendarListItem>, ClientError> {
         // FIXME get all the results lol
         let mut cl = CalendarList::default();
         cl.query_string

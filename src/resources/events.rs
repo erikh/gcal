@@ -1,5 +1,5 @@
 use crate::{
-    client::Client,
+    client::{Client, ClientError},
     resources::{CalendarAccessRole, DefaultReminder, SendUpdates},
     sendable::{AdditionalProperties, QueryParams, Sendable},
 };
@@ -447,23 +447,23 @@ impl EventClient {
         Self(client)
     }
 
-    pub async fn delete(&self, event: Event) -> Result<Response, anyhow::Error> {
+    pub async fn delete(&self, event: Event) -> Result<Response, ClientError> {
         self.0.delete(None, event).await
     }
 
-    pub async fn get(&self, id: String) -> Result<Event, anyhow::Error> {
+    pub async fn get(&self, id: String) -> Result<Event, ClientError> {
         let resp = self.0.get(Some(id), Event::default()).await?;
 
         Ok(resp.json().await?)
     }
 
-    pub async fn import(&self, event: Event) -> Result<Event, anyhow::Error> {
+    pub async fn import(&self, event: Event) -> Result<Event, ClientError> {
         let resp = self.0.post(Some("import".to_string()), event).await?;
 
         Ok(resp.json().await?)
     }
 
-    pub async fn insert(&self, mut event: Event) -> Result<Event, anyhow::Error> {
+    pub async fn insert(&self, mut event: Event) -> Result<Event, ClientError> {
         if let Some(attachments) = event.attachments.clone() {
             if !attachments.is_empty() {
                 event
@@ -477,7 +477,7 @@ impl EventClient {
         Ok(resp.json().await?)
     }
 
-    pub async fn instances(&self, event: Event) -> Result<Vec<Event>, anyhow::Error> {
+    pub async fn instances(&self, event: Event) -> Result<Vec<Event>, ClientError> {
         Ok(self
             .0
             .get(Some("instances".to_string()), event)
@@ -491,7 +491,7 @@ impl EventClient {
         calendar_id: String,
         start_time: chrono::DateTime<chrono::Local>,
         end_time: chrono::DateTime<chrono::Local>,
-    ) -> Result<Vec<Event>, anyhow::Error> {
+    ) -> Result<Vec<Event>, ClientError> {
         let mut event = Event::default();
         event
             .query_string
@@ -509,7 +509,7 @@ impl EventClient {
         mut event: Event,
         destination: String,
         send_updates: Option<SendUpdates>,
-    ) -> Result<(), anyhow::Error> {
+    ) -> Result<(), ClientError> {
         event
             .query_string
             .insert("destination".to_string(), destination);
@@ -522,7 +522,7 @@ impl EventClient {
         Ok(())
     }
 
-    pub async fn add(&self, text: String) -> Result<Event, anyhow::Error> {
+    pub async fn add(&self, text: String) -> Result<Event, ClientError> {
         let mut event = Event::default();
         event.query_string.insert("text".to_string(), text);
 
@@ -534,7 +534,7 @@ impl EventClient {
             .await?)
     }
 
-    pub async fn update(&self, event: Event) -> Result<Event, anyhow::Error> {
+    pub async fn update(&self, event: Event) -> Result<Event, ClientError> {
         Ok(self.0.put(None, event).await?.json().await?)
     }
 }

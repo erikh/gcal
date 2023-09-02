@@ -1,3 +1,4 @@
+use crate::client::ClientError;
 use std::collections::BTreeMap;
 use url::Url;
 
@@ -13,14 +14,14 @@ where
     fn path(&self, action: Option<String>) -> String;
     fn query(&self) -> BTreeMap<String, String>;
 
-    fn url(&self, action: Option<String>) -> Result<Url, anyhow::Error> {
+    fn url(&self, action: Option<String>) -> Result<Url, ClientError> {
         Ok(Url::parse_with_params(
             &format!("{}/{}", BASE_URL, self.path(action)),
             self.query(),
         )?)
     }
 
-    fn body_bytes(&self) -> Result<Vec<u8>, anyhow::Error> {
+    fn body_bytes(&self) -> Result<Vec<u8>, ClientError> {
         Ok(serde_json::to_vec(self)?)
     }
 }
