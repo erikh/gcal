@@ -108,6 +108,8 @@ pub struct Event {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub private_copy: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub recurring_event_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub recurrence: Option<BTreeSet<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reminders: Option<EventReminder>,
