@@ -8,6 +8,8 @@ use serde_derive::{Deserialize, Serialize};
  * from: https://developers.google.com/calendar/api/v3/reference/calendarList#resource
  */
 
+/// CalendarListClient is the method of accessing the calendar list. You must provide it with a
+/// Google Calendar client.
 pub struct CalendarListClient(Client);
 
 fn default_entry_kind() -> Option<String> {
@@ -18,6 +20,8 @@ fn default_list_kind() -> Option<String> {
     Some("calendar#calendarList".to_string())
 }
 
+/// CalendarListItem is a single calendar returned by CalendarList, do not confuse this with
+/// Calendar.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CalendarListItem {
@@ -95,7 +99,7 @@ pub enum NotificationSettingType {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct CalendarList {
-    #[serde(default = "default_entry_kind")]
+    #[serde(default = "default_list_kind")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     pub etag: String,
@@ -129,10 +133,12 @@ impl Sendable for CalendarList {
 }
 
 impl CalendarListClient {
+    /// Construct a CalendarListClient. Requires a Google Calendar Client.
     pub fn new(client: Client) -> Self {
         Self(client)
     }
 
+    /// List the calendars. Currently only returns the first page of results.
     pub async fn list(&self) -> Result<Vec<CalendarListItem>, ClientError> {
         // FIXME get all the results lol
         let mut cl = CalendarList::default();

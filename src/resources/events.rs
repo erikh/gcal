@@ -22,8 +22,11 @@ fn default_true() -> Option<bool> {
     Some(true)
 }
 
+/// EventClient is the method of managing events from a specific calendar. Requires a Google
+/// Calendar client.
 pub struct EventClient(Client);
 
+/// Events is a listing of events on a per-page basis.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Events {
@@ -44,6 +47,7 @@ pub struct Events {
     pub items: Vec<Event>,
 }
 
+/// Event is a single event.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Event {
@@ -444,27 +448,34 @@ impl Sendable for Event {
 }
 
 impl EventClient {
+    /// Construct a new EventClient. Requires a Google Calendar Client.
     pub fn new(client: Client) -> Self {
         Self(client)
     }
 
+    /// Delete the event.
     pub async fn delete(&self, event: Event) -> Result<(), ClientError> {
         self.0.delete(None, event).await?;
         Ok(())
     }
 
+    /// Get an event by ID.
     pub async fn get(&self, id: String) -> Result<Event, ClientError> {
         let resp = self.0.get(Some(id), Event::default()).await?;
 
         Ok(resp.json().await?)
     }
 
+    /// Import an event. See the Google Calendar documentation for the differences between import
+    /// and insert.
     pub async fn import(&self, event: Event) -> Result<Event, ClientError> {
         let resp = self.0.post(Some("import".to_string()), event).await?;
 
         Ok(resp.json().await?)
     }
 
+    /// Insert an event. See the Google Calendar documentation for the differences between import
+    /// and insert.
     pub async fn insert(&self, mut event: Event) -> Result<Event, ClientError> {
         if let Some(attachments) = event.attachments.clone() {
             if !attachments.is_empty() {
@@ -479,6 +490,7 @@ impl EventClient {
         Ok(resp.json().await?)
     }
 
+    /// Retrieve all instances for a recurring event.
     pub async fn instances(&self, event: Event) -> Result<Events, ClientError> {
         Ok(self
             .0
@@ -488,6 +500,7 @@ impl EventClient {
             .await?)
     }
 
+    /// List events between the start and end times.
     pub async fn list(
         &self,
         calendar_id: String,
@@ -506,6 +519,7 @@ impl EventClient {
         Ok(self.0.get(None, event).await?.json::<Events>().await?.items)
     }
 
+    /// Move event to another destination calendar_id.
     pub async fn move_to_calendar(
         &self,
         mut event: Event,
@@ -524,6 +538,7 @@ impl EventClient {
         Ok(())
     }
 
+    /// Add an event with the summary.
     pub async fn add(&self, text: String) -> Result<Event, ClientError> {
         let mut event = Event::default();
         event.query_string.insert("text".to_string(), text);
@@ -536,6 +551,7 @@ impl EventClient {
             .await?)
     }
 
+    /// Update an event.
     pub async fn update(&self, event: Event) -> Result<Event, ClientError> {
         Ok(self.0.put(None, event).await?.json().await?)
     }

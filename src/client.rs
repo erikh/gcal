@@ -5,6 +5,8 @@ use reqwest::{
 };
 use thiserror::Error;
 
+/// ClientError provides a mechanism to determine when the access token has expired. All other
+/// errors will be encapsulated by UnknownError.
 #[derive(Clone, Debug, Error)]
 pub enum ClientError {
     #[error("Invalid Access Token")]
@@ -49,6 +51,10 @@ impl From<reqwest::header::ToStrError> for ClientError {
     }
 }
 
+/// Client is a Google Calendar client. The access key must have already been fetched and the oauth
+/// negotiation should have already been completed. The client itself only implements HTTP verbs
+/// that accept Sendable implementations. You must use the decorated clients such as EventClient
+/// and CalendarListClient to do transactional work.
 #[derive(Debug, Clone)]
 pub struct Client {
     client: reqwest::Client,
@@ -57,6 +63,7 @@ pub struct Client {
 }
 
 impl Client {
+    /// Create a new client. Requires an access key.
     pub fn new(access_key: String) -> Result<Self, ClientError> {
         let client = ClientBuilder::new().gzip(true).https_only(true).build()?;
 
@@ -65,10 +72,6 @@ impl Client {
             access_key,
             headers: None,
         })
-    }
-
-    pub(crate) fn set_headers(&mut self, header: HeaderMap<HeaderValue>) {
-        self.headers = Some(header)
     }
 
     fn set_bearer(&self, req: RequestBuilder) -> RequestBuilder {
@@ -97,6 +100,7 @@ impl Client {
         }
     }
 
+    /// Perform a GET request.
     pub async fn get(
         &self,
         action: Option<String>,
@@ -105,6 +109,7 @@ impl Client {
         self.send(self.client.get(target.url(action)?)).await
     }
 
+    /// Perform a POST request.
     pub async fn post(
         &self,
         action: Option<String>,
@@ -118,6 +123,7 @@ impl Client {
         .await
     }
 
+    /// Perform a PUT request.
     pub async fn put(
         &self,
         action: Option<String>,
@@ -131,6 +137,7 @@ impl Client {
         .await
     }
 
+    /// Perform a PATCH request.
     pub async fn patch(
         &self,
         action: Option<String>,
@@ -144,6 +151,7 @@ impl Client {
         .await
     }
 
+    /// Perform a PATCH request.
     pub async fn delete(
         &self,
         action: Option<String>,
