@@ -2,6 +2,11 @@
 name = "gcal"
 version = "0.1.0"
 edition = "2021"
+description = "gcal is simplistic a client library for Google Calendar, designed to power saturn-cli"
+authors = ["Erik Hollensbe <erik+github@hollensbe.org>"]
+license = "MIT"
+homepage = "https://github.com/erikh/gcal"
+repository = "https://github.com/erikh/gcal"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
