@@ -460,8 +460,11 @@ impl EventClient {
     }
 
     /// Get an event by ID.
-    pub async fn get(&self, id: String) -> Result<Event, ClientError> {
-        let resp = self.0.get(Some(id), Event::default()).await?;
+    pub async fn get(&self, calendar_id: String, event_id: String) -> Result<Event, ClientError> {
+        let mut event = Event::default();
+        event.id = Some(event_id);
+        event.calendar_id = Some(calendar_id);
+        let resp = self.0.get(None, event).await?;
 
         Ok(resp.json().await?)
     }
