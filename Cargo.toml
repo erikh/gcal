@@ -1,6 +1,6 @@
 [package]
 name = "gcal"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "gcal is simplistic a client library for Google Calendar, designed to power saturn-cli"
 authors = ["Erik Hollensbe <erik+github@hollensbe.org>"]
