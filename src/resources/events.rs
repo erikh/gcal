@@ -167,7 +167,8 @@ pub struct EventOfficeLocation {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventCustomLocation {
-    pub label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -314,7 +315,8 @@ pub struct EventCreator {
 #[serde(rename_all = "camelCase")]
 pub struct EventConferenceEntryPoint {
     entry_point_type: EventConferenceEntryPointType,
-    label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     meeting_code: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
