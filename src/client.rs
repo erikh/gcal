@@ -151,7 +151,7 @@ impl Client {
         .await
     }
 
-    /// Perform a PATCH request.
+    /// Perform a DELETE request.
     pub async fn delete(
         &self,
         action: Option<String>,

@@ -56,7 +56,7 @@ pub struct Event {
     pub kind: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip)]
     pub calendar_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attachments: Option<Vec<EventAttachment>>,
@@ -227,6 +227,7 @@ pub struct EventReminder {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventOrganizer {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
     pub email: String,
     #[serde(skip_serializing_if = "Option::is_none")]
