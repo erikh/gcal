@@ -255,7 +255,7 @@ pub struct EventGadget {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EventExtendedProperties {
-    pub private: AdditionalProperties,
+    pub private: Option<AdditionalProperties>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shared: Option<AdditionalProperties>,
 }
