@@ -60,6 +60,7 @@ pub struct Client {
     client: reqwest::Client,
     access_key: String,
     headers: Option<HeaderMap<HeaderValue>>,
+    debug: bool,
 }
 
 impl Client {
@@ -71,7 +72,12 @@ impl Client {
             client,
             access_key,
             headers: None,
+            debug: false,
         })
+    }
+
+    pub fn set_debug(&mut self) {
+        self.debug = true
     }
 
     fn set_bearer(&self, req: RequestBuilder) -> RequestBuilder {
@@ -100,13 +106,35 @@ impl Client {
         }
     }
 
+    fn get_url(
+        &self,
+        method: &str,
+        target: &impl Sendable,
+        action: Option<String>,
+    ) -> Result<url::Url, ClientError> {
+        let url = target.url(action)?;
+
+        if self.debug {
+            let byt = target.body_bytes()?;
+            eprintln!(
+                "[{}] {} | {}",
+                method,
+                url,
+                String::from_utf8(byt).unwrap_or_default()
+            );
+        }
+
+        Ok(url)
+    }
+
     /// Perform a GET request.
     pub async fn get(
         &self,
         action: Option<String>,
         target: impl Sendable,
     ) -> Result<Response, ClientError> {
-        self.send(self.client.get(target.url(action)?)).await
+        self.send(self.client.get(self.get_url("GET", &target, action)?))
+            .await
     }
 
     /// Perform a POST request.
@@ -117,7 +145,7 @@ impl Client {
     ) -> Result<Response, ClientError> {
         self.send(
             self.client
-                .post(target.url(action)?)
+                .post(self.get_url("POST", &target, action)?)
                 .body(target.body_bytes()?),
         )
         .await
@@ -131,7 +159,7 @@ impl Client {
     ) -> Result<Response, ClientError> {
         self.send(
             self.client
-                .put(target.url(action)?)
+                .put(self.get_url("PUT", &target, action)?)
                 .body(target.body_bytes()?),
         )
         .await
@@ -145,7 +173,7 @@ impl Client {
     ) -> Result<Response, ClientError> {
         self.send(
             self.client
-                .patch(target.url(action)?)
+                .patch(self.get_url("PATCH", &target, action)?)
                 .body(target.body_bytes()?),
         )
         .await
@@ -157,6 +185,7 @@ impl Client {
         action: Option<String>,
         target: impl Sendable,
     ) -> Result<Response, ClientError> {
-        self.send(self.client.delete(target.url(action)?)).await
+        self.send(self.client.delete(self.get_url("DELETE", &target, action)?))
+            .await
     }
 }
